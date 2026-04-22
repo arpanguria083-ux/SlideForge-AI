@@ -1,0 +1,19 @@
+appId: com.slideforge.ai
+productName: SlideForge AI
+directories:
+  output: dist/electron
+files:
+  - dist/**
+  - dist/electron/**
+  - legal/**
+extraResources:
+  - from: backend/dist/SlideForge
+    to: backend
+win:
+  target: nsis
+mac:
+  target: dmg
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true

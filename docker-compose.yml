@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - slideforge-data:/root/.slideforge
+    environment:
+      - CORS_ORIGINS=http://127.0.0.1:3000,http://localhost:3000,http://frontend:3000
+      - API_BASE_URL=http://ollama:11434/v1
+      - API_KEY=ollama
+      - MAX_CONCURRENT_LLM=4
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./SlideForge-AI
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./SlideForge-AI:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_BASE=http://localhost:8000/api
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  slideforge-data:
+  ollama-data:

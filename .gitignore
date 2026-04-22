@@ -17,8 +17,20 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+.claude/
+.ruff_cache/
+docs/.~lock.*
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Python/backend runtime artifacts
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+backend/.env
+backend/data/

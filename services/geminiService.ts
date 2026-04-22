@@ -1,7 +1,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { SlideAnalysis } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const getGeminiClient = (): GoogleGenAI => {
+  const configuredApiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+  if (!configuredApiKey) {
+    throw new Error('VITE_GEMINI_API_KEY is not configured for frontend Gemini service.');
+  }
+  return new GoogleGenAI({ apiKey: configuredApiKey });
+};
 
 const SYSTEM_PROMPT = `
 You are SlideForge AI, an elite Consulting Deck Evaluator. 
@@ -43,6 +49,7 @@ const fileToGenerativePart = async (file: File): Promise<string> => {
 
 export const analyzeSlideImage = async (file: File): Promise<SlideAnalysis> => {
   try {
+    const ai = getGeminiClient();
     const base64Data = await fileToGenerativePart(file);
 
     const response = await ai.models.generateContent({

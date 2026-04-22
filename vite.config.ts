@@ -5,14 +5,27 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
+      base: './',
       server: {
         port: 3000,
-        host: '0.0.0.0',
+        host: '127.0.0.1',
+        proxy: {
+          '/api': {
+            target: 'http://127.0.0.1:8002',
+            changeOrigin: true,
+            rewrite: (path) => path,
+          },
+        },
       },
       plugins: [react()],
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+      build: {
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              charts: ['recharts'],
+            },
+          },
+        },
       },
       resolve: {
         alias: {
